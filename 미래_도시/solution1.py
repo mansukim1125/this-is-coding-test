@@ -1,31 +1,36 @@
-from typing import Dict, List
 from math import inf
-import heapq
 
 
-def dijkstra(graph: Dict[int, List[List[int]]], start: int) -> List[int]:
-  distance = [inf] * (len(dict.keys(graph)) + 1)
-  distance[start] = 0
+def initialize_zero(graph):
+  for row_idx in range(1, len(graph)):
+    for col_idx in range(1, len(graph[row_idx])):
+      if row_idx == col_idx:
+        graph[row_idx][col_idx] = 0
 
-  queue = [(0, start)]
 
-  while len(queue) > 0:
-    cost, node = heapq.heappop(queue)
-    for adj_cost, adj_node in graph[node]:
-      if distance[adj_node] > distance[node] + adj_cost:
-        distance[adj_node] = distance[node] + adj_cost
-        heapq.heappush(queue, distance[adj_node])
-  
-  return distance
+def floyd_warshall(graph):
+  for through_node in range(1, len(graph)):
+    for start_idx in range(1, len(graph)):
+      for end_idx in range(1, len(graph[start_idx])):
+        graph[start_idx][end_idx] = min(graph[start_idx][end_idx], graph[start_idx][through_node] + graph[through_node][end_idx])
 
 
 def solution():
-  N, M = map(int, input().split())
-  
-  graph = {}
-  for i in range(1, M + 1):
-    graph[i]
-    pass
+  nodes, edges = map(int, input().split())
+
+  graph = [[inf] * (nodes + 1) for _ in range(nodes + 1)]
+  for _ in range(edges):
+    row, col = map(int, input().split())
+    graph[row][col] = 1
+    graph[col][row] = 1
+
+  X, K = map(int, input().split())
+
+  initialize_zero(graph)
+  floyd_warshall(graph)
+
+  print(graph[1][K] + graph[K][X])
+
 
 if __name__ == '__main__':
-  pass
+  solution()
